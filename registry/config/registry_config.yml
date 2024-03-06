@@ -1,12 +1,14 @@
 version: 0.1
 log:
+  level: debug
+  formatter: text
   fields:
     service: registry
 storage:
-  cache:
-    blobdescriptor: inmemory
   filesystem:
     rootdirectory: /var/lib/registry
+  cache:
+    blobdescriptor: inmemory
   delete:
     enabled: true
 http:
@@ -23,4 +25,3 @@ auth:
     realm: "https://127.0.0.1:5001/auth"
     service: "Docker registry"
     issuer: "auth_service"
-    rootcertbundle: "/certs/certificate.pem"

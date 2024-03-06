@@ -1,4 +1,5 @@
+auth/logs
 mongo/data
-registry/registry_data
-cesanta/cesanta_logs
+registry/data
 ssl/
+*.env
