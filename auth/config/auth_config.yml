@@ -1,5 +1,6 @@
-# A simple example. See reference.yml for explanation for explanation of all options.
+# Implementación MongoDB, revisar reference.yml para más detalles.
 #
+# Recordar añadir esta configuración al archivo de configuración de Registry.
 #  auth:
 #    token:
 #      realm: "https://127.0.0.1:5001/auth"
@@ -13,69 +14,45 @@ server:
   key: "/ssl/key.pem"
 
 token:
-  issuer: "auth_service" # Must match issuer in the Registry config.
+  issuer: "auth_service" # Debe ser el mismo que el issuer en el archivo de configuración de Registry.
   expiration: 900
 
-# mongo_auth:
-#   # Essentially all options are described here: https://godoc.org/gopkg.in/mgo.v2#DialInfo
-#   dial_info:
-#     # The MongoDB hostnames or IPs to connect to.
-#     addrs: ["mongo:27017"]
-#     # The time to wait for a server to respond when first connecting and on
-#     # follow up operations in the session. If timeout is zero, the call may
-#     # block forever waiting for a connection to be established.
-#     # (See https://golang.org/pkg/time/#ParseDuration for a format description.)
-#     timeout: "10s"
-#     # Database name that will be used on the MongoDB server.
-#     database: "API"
-#     # The username with which to connect to the MongoDB server.
-#     username: ""
-#     # Path to the text file with the password in it.
-#     password_file: ""
-#     # Enable TLS connection to MongoDB (only enable this if your server supports it)
-#     enable_tls: false
-#   # Name of the collection in which ACLs will be stored in MongoDB.
-#   collection: "users"
-#   # Unlike acl_mongo we don't cache the full user set. We just query mongo for
-#   # an exact match for each authorization
+mongo_auth:
+  dial_info:
+    addrs: ["mongo:27017"]
+    timeout: "10s"
+    database: "registry"
+    username: "root"
+    password_file: "/config/password.txt"
+    enable_tls: false
+  collection: "users"
 
-# # (optional) Define to query ACL from a MongoDB server.
-# acl_mongo:
-#   # Essentially all options are described here: https://godoc.org/gopkg.in/mgo.v2#DialInfo
-#   dial_info:
-#     # The MongoDB hostnames or IPs to connect to.
-#     addrs: ["mongo:27017"]
-#     # The time to wait for a server to respond when first connecting and on
-#     # follow up operations in the session. If timeout is zero, the call may
-#     # block forever waiting for a connection to be established.
-#     # (See https://golang.org/pkg/time/#ParseDuration for a format description.)
-#     timeout: "10s"
-#     # Database name that will be used on the MongoDB server.
-#     database: "API"
-#     # The username with which to connect to the MongoDB server.
-#     username: ""
-#     # Path to the text file with the password in it.
-#     password_file: ""
-#     # Enable TLS connection to MongoDB (only enable this if your server supports it)
-#     enable_tls: false
-#   # Name of the collection in which ACLs will be stored in MongoDB.
-#   collection: "acl"
-#   # Specify how long an ACL remains valid before they will be fetched again from
-#   # the MongoDB server.
-#   # (See https://golang.org/pkg/time/#ParseDuration for a format description.)
-#   cache_ttl: "15s"
+acl_mongo:
+  dial_info:
+    addrs: ["mongo:27017"]
+    timeout: "10s"
+    database: "registry"
+    username: "root"
+    password_file: "/config/password.txt"
+    enable_tls: false
+  collection: "acl"
+  cache_ttl: "30s"
 
-users:
-  # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.
-  "admin":
-    password: "$2y$05$LO.vzwpWC5LZGqThvEfznu8qhb5SGqvBSWY1J3yZ4AxtMRZ3kN5jC" # badmin
-  "test":
-    password: "$2y$05$WuwBasGDAgr.QCbGIjKJaep4dhxeai9gNZdmBnQXqpKly57oNutya" # 123
+#
+# Simple example of a user and ACL configuration.
+#
 
-acl:
-  - match: { account: "admin" }
-    actions: ["*"]
-    comment: "Admin has full access to everything."
-  - match: { account: "test" }
-    actions: ["pull"]
-    comment: 'User "test" can pull stuff.'
+# users:
+#   # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.
+#   "admin":
+#     password: "$2y$05$LO.vzwpWC5LZGqThvEfznu8qhb5SGqvBSWY1J3yZ4AxtMRZ3kN5jC" # badmin
+#   "test":
+#     password: "$2y$05$WuwBasGDAgr.QCbGIjKJaep4dhxeai9gNZdmBnQXqpKly57oNutya" # 123
+
+# acl:
+#   - match: { account: "admin" }
+#     actions: ["*"]
+#     comment: "Admin has full access to everything."
+#   - match: { account: "test" }
+#     actions: ["pull"]
+#     comment: 'User "test" can pull stuff.'

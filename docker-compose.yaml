@@ -1,41 +1,26 @@
 version: '3.8'
 
 services:
-  # mongo:
-  #   image: mongo
-  #   restart: always
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - ./mongo/data:/data/db
-  #     - ./mongo/conf/init_db.js:/docker-entrypoint-initdb.d/init_db.js:ro
-  # environment:
-  #   MONGO_INITDB_ROOT_USERNAME: root
-  #   MONGO_INITDB_ROOT_PASSWORD: example
-
-  # mongo-express:
-  #   image: mongo-express
-  #   container_name: mongo-express
-  #   restart: always
-  #   ports:
-  #     - "8081:8081"
-  #   # environment:
-  #   #   ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  #   #   ME_CONFIG_MONGODB_ADMINPASSWORD: example
-  #   #   ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-  #   depends_on:
-  #     - mongo
-
-  auth:
-    image: cesanta/docker_auth
-    command: --v=2 --alsologtostderr /config/auth_config.yml
-    ports:
-      - "5001:5001"
+  mongo:
+    image: mongo
+    restart: always
+    env_file:
+      - ./mongo/config/mongo.env
     volumes:
-      - ./ssl:/ssl
-      - ./auth/config:/config:ro
+      - ./mongo/data:/data/db
+      - ./mongo/config/init_db.js:/docker-entrypoint-initdb.d/init_db.js:ro
+    expose:
+      - "27017"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    env_file:
+      - ./mongo/config/mongo.env
+    ports:
+      - "8081:8081"
     depends_on:
-      - registry
+      - mongo
 
   registry:
     image: registry:2
@@ -48,3 +33,15 @@ services:
       - ./ssl:/certs:ro
       - ./registry/config/registry_config.yml:/etc/docker/registry/config.yml:ro
       - ./registry/data:/var/lib/registry
+
+  auth:
+    image: cesanta/docker_auth
+    command: --v=2 --alsologtostderr /config/auth_config.yml
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./ssl:/ssl
+      - ./auth/config:/config:ro
+    depends_on:
+      - registry
+      - mongo

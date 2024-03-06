@@ -1,4 +1,4 @@
-db = db.getSiblingDB("API");
+db = db.getSiblingDB("registry");
 
 db.createCollection("acl");
 
@@ -69,7 +69,7 @@ db.createCollection("users");
 db.users.insertMany([
   {
     username: "admin",
-    password: "$2y$05$B.x046DV3bvuwFgn0I42F.W/SbRU5fUoCbCGtjFl7S33aCUHNBxbq",
+    password: "$2y$05$LO.vzwpWC5LZGqThvEfznu8qhb5SGqvBSWY1J3yZ4AxtMRZ3kN5jC",
   },
   {
     username: "test",
