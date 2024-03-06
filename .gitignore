@@ -1,0 +1,4 @@
+mongo/data
+registry/registry_data
+cesanta/cesanta_logs
+ssl/
